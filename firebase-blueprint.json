@@ -1,0 +1,169 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Citizen profile containing personal details for dynamic scheme eligibility calculation",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Auth UID" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["citizen", "admin"] },
+        "state": { "type": "string", "maxLength": 50 },
+        "district": { "type": "string", "maxLength": 50 },
+        "age": { "type": "integer" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "annualIncome": { "type": "integer" },
+        "occupation": { "type": "string", "maxLength": 100 },
+        "education": { "type": "string", "maxLength": 100 },
+        "isFarmer": { "type": "boolean" },
+        "isStudent": { "type": "boolean" },
+        "landholdingAcres": { "type": "number" },
+        "caste": { "type": "string", "maxLength": 50 },
+        "isBPL": { "type": "boolean" },
+        "hasAadhaar": { "type": "boolean" },
+        "hasBankAccount": { "type": "boolean" },
+        "hasRationCard": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "SavedScheme": {
+      "title": "SavedScheme",
+      "description": "Bookmarked government scheme with user status notes",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "schemeId": { "type": "string" },
+        "schemeName": { "type": "string" },
+        "category": { "type": "string" },
+        "savedAt": { "type": "string" },
+        "notes": { "type": "string", "maxLength": 500 },
+        "applicationStatus": { "type": "string", "enum": ["Saved", "In Progress", "Submitted", "Approved", "Rejected"] }
+      },
+      "required": ["userId", "schemeId", "schemeName"]
+    },
+    "Application": {
+      "title": "Application",
+      "description": "Tracked scheme application record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "schemeId": { "type": "string" },
+        "schemeName": { "type": "string" },
+        "status": { "type": "string", "enum": ["Draft", "Submitted", "Under Review", "Approved", "Rejected"] },
+        "applicationNumber": { "type": "string" },
+        "appliedDate": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["userId", "schemeId", "schemeName", "status"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "YojanaMitra AI conversation message",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "sender": { "type": "string", "enum": ["user", "assistant"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "sender", "content"]
+    },
+    "OcrDocument": {
+      "title": "OcrDocument",
+      "description": "Scanned document details extracted via OCR",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "docType": { "type": "string" },
+        "extractedText": { "type": "string" },
+        "extractedFields": { "type": "object" },
+        "confidence": { "type": "number" },
+        "scannedAt": { "type": "string" }
+      },
+      "required": ["userId", "docType"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notification update for scheme announcements and status updates",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "read": { "type": "boolean" },
+        "type": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "message"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Citizen feedback and bug reports",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "rating": { "type": "integer" },
+        "category": { "type": "string" },
+        "comments": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["rating", "comments"]
+    },
+    "GovernmentScheme": {
+      "title": "GovernmentScheme",
+      "description": "Official government welfare scheme with verified criteria",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "ministry": { "type": "string" },
+        "category": { "type": "string" },
+        "isCentral": { "type": "boolean" },
+        "description": { "type": "string" },
+        "benefits": { "type": "string" },
+        "officialWebsite": { "type": "string" },
+        "helpline": { "type": "string" },
+        "lastVerifiedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "ministry", "category"]
+    }
+  },
+  "firestore": {
+    "/schemes/{schemeId}": {
+      "schema": { "$ref": "#/entities/GovernmentScheme" },
+      "description": "Official verified schemes catalog"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile collection"
+    },
+    "/users/{userId}/savedSchemes/{schemeDocId}": {
+      "schema": { "$ref": "#/entities/SavedScheme" },
+      "description": "Saved schemes per user"
+    },
+    "/users/{userId}/applications/{appId}": {
+      "schema": { "$ref": "#/entities/Application" },
+      "description": "Scheme applications per user"
+    },
+    "/users/{userId}/messages/{msgId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "AI Chat messages per user"
+    },
+    "/users/{userId}/ocrScans/{scanId}": {
+      "schema": { "$ref": "#/entities/OcrDocument" },
+      "description": "Scanned documents per user"
+    },
+    "/users/{userId}/notifications/{notifId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User notifications"
+    },
+    "/feedback/{feedbackId}": {
+      "schema": { "$ref": "#/entities/Feedback" },
+      "description": "Global citizen feedback"
+    }
+  }
+}

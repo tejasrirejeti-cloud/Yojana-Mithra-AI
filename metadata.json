@@ -1,0 +1,12 @@
+{
+  "name": "Yojana Mitra AI",
+  "description": "Intelligent Government Scheme Assistant for Indian Citizens featuring AI profile reasoning, scheme retrieval, eligibility scoring, multilingual support, voice assistance, OCR document extraction, nearby center locator, and downloadable PDF reports.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
